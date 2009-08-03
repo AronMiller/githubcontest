@@ -17,7 +17,7 @@ namespace GithubContest
         int[][] uod;
         int userCount;
         int repoCount;
-        float reg = .015f;
+        float reg = .001f;
 
         int featureCount;
         float[] userBias; 
@@ -73,11 +73,14 @@ namespace GithubContest
         public void Train(int epochMax)
         {
             // model train
-            int count = 0;
+            
             for (int epoch = 0; epoch < epochMax; epoch++)
             {
                 float trRate = .01f * (float)Math.Pow(.95, epoch);
-                float totalErr = 0f;
+                float totalErrPos = 0f;
+                float totalErrNeg = 0f;
+                int countPos = 0;
+                int countNeg = 0;
                 for (int user = 0; user < userCount; user++)
                 {
                     int[] repos = uod[user];
@@ -89,29 +92,7 @@ namespace GithubContest
                     for(int j = 0; j < repos.Length; j++)
                     {
                         int repo = repos[j];
-                    //for (int repo = 0; repo < repoCount; repo++)
-                    //{
-                        /*float targValue;
-                        if (repo < usrRepo)
-                        {
-                            targValue = 0;
-                            continue;
-                        }
-                        else if (repo == usrRepo)
-                        {
-                            targValue = 1;
-                            usrPos++;
-                            if (usrPos < repos.Length)
-                            {
-                                usrRepo = repos[usrPos];
-                            }
-                        }
-                        else
-                        {
-                            targValue = 0;
-                            continue;
-                        }*/
-
+ 
                         float[] rf = repoFeatures[repo];
 
                         float pred = userBias[user] + repoBias[repo];
@@ -122,7 +103,7 @@ namespace GithubContest
 
                         pred = (float)(1f / (1f + Math.Exp(-pred)));
                         float err = 1f - pred;
-                        totalErr += err * err;
+                        totalErrPos += err * err;
 
                         userBias[user] += trRate * err;
                         repoBias[repo] += trRate * err;
@@ -132,11 +113,12 @@ namespace GithubContest
                             uf[f] += trRate * (err * rf[f] - reg * uf[f]);
                             rf[f] += trRate * (err * uf[f] - reg * rf[f]);
                         }
-                        count++;
+                        countPos++;
                     }
 
+                    
                     // random negative selections
-                    for (int j = 0; j < 100; j++)
+                    for (int j = 0; j < repos.Length; j++)
                     {
                         int repo = r.Next(repoCount); 
 
@@ -150,7 +132,7 @@ namespace GithubContest
 
                         pred = (float)(1f / (1f + Math.Exp(-pred)));
                         float err = 0f - pred;
-                        totalErr += err * err;
+                        totalErrNeg += err * err;
 
                         userBias[user] += trRate * err;
                         repoBias[repo] += trRate * err;
@@ -160,10 +142,12 @@ namespace GithubContest
                             uf[f] += trRate * (err * rf[f] - reg * uf[f]);
                             rf[f] += trRate * (err * uf[f] - reg * rf[f]);
                         }
-                        count++;
+                        countNeg++;
                     }
                 }
-                Console.WriteLine(Math.Sqrt(totalErr / count));
+                totalErrPos = (float)Math.Sqrt(totalErrPos / countPos);
+                totalErrNeg = (float)Math.Sqrt(totalErrNeg / countPos);
+                Console.WriteLine(totalErrPos + "," + totalErrNeg); 
             }
         }
 
@@ -190,16 +174,20 @@ namespace GithubContest
                     }
 
                     //pred = (float)(1f / (1f + Math.Exp(-pred)));
-                    IntFloat sort = new IntFloat();
-                    sort.Int = repo;
-                    sort.Float = pred;
-                    sortMe.Add(sort); 
+                    if (pred > 0f)
+                    {
+                        IntFloat sort = new IntFloat();
+                        sort.Int = repo;
+                        sort.Float = pred;
+                        sortMe.Add(sort);
+                    }
                 }
 
                 sortMe.Sort();
 
                 int cnt = 0;
-                int[] predictList = new int[10];
+                int predictions = (sortMe.Count < 10 ? sortMe.Count : 10);
+                int[] predictList = new int[predictions];
                 foreach (IntFloat sort in sortMe)
                 {
                     Repository r = usr.Repo.GetByInternalID(sort.Int);
@@ -209,17 +197,19 @@ namespace GithubContest
                     {
                         predictList[cnt] = td.Repositories.GetByInternalID(sort.Int).ExternalID;
                         cnt++;
-                        if (cnt == 10) break;
+                        if (cnt == predictions) break;
                     }
                 }
 
                 // print to file
                 string outStr = usr.ExternalID + ":";
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < predictions; i++)
                 {
                     outStr += predictList[i];
-                    if (i < 9) outStr += ",";
+                    if (i < predictions - 1) outStr += ",";
                 }
+
+                Console.WriteLine(outStr);
                 sw.WriteLine(outStr);
                 sortMe.Clear();
             }

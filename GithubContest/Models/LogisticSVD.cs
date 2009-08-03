@@ -210,7 +210,7 @@ namespace GithubContest
                 }
 
                 // print to file
-                string outStr = usr.ID + ":";
+                string outStr = usr.ExternalID + ":";
                 for (int i = 0; i < 10; i++)
                 {
                     outStr += predictList[i];

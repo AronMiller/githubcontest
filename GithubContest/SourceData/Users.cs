@@ -23,24 +23,6 @@ namespace GithubContest
                 Index[externalID] = u.ID;
                 return u;
             }
-            /*
-            User retVal = null;
-            foreach (User u in this)
-            {
-                if (u.ID == ID)
-                {
-                    retVal = u;
-                    break;
-                }
-            }
-            if (retVal == null)
-            {
-                retVal = new User();
-                retVal.ID = ID;
-                this.Add(retVal);
-            }
-            return retVal;
-             */
         }
     }
 }

@@ -1,0 +1,5 @@
+C:\Users\Aron\Github\GithubContest\GithubContest\bin\Release\GithubContest.exe
+C:\Users\Aron\Github\GithubContest\GithubContest\bin\Release\GithubContest.pdb
+C:\Users\Aron\Github\GithubContest\GithubContest\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Aron\Github\GithubContest\GithubContest\obj\Release\GithubContest.exe
+C:\Users\Aron\Github\GithubContest\GithubContest\obj\Release\GithubContest.pdb

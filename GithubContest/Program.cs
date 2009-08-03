@@ -13,7 +13,7 @@ namespace GithubContest
             string data = @"C:\Users\Aron\Github\download\data.txt";
             string lang = @"C:\Users\Aron\Github\download\lang.txt";
             string test = @"C:\Users\Aron\Github\download\test.txt";
-            string results = @"C:\Users\Aron\Github\download\results.txt";
+            string results = @"C:\Users\Aron\Github\GithubContest\GithubContest\results.txt";
 
             TrainingData trainData = new TrainingData();
             trainData.Load(repos, lang, data);
@@ -23,7 +23,7 @@ namespace GithubContest
 
             LogisticSVD svd = new LogisticSVD();
             svd.Setup(trainData, testData, results);
-            for(int epoch = 0; epoch < 10; epoch++)
+            for(int epoch = 0; epoch < 200; epoch++)
                 svd.Train(1);
             svd.Predict();
         }

@@ -72,7 +72,7 @@ namespace GithubContest
             int count = 0;
             for (int epoch = 0; epoch < epochMax; epoch++)
             {
-                float trRate = .01f * (float)Math.Pow(.9, epoch);
+                float trRate = .01f * (float)Math.Pow(.95, epoch);
                 float totalErr = 0f;
                 for (int user = 0; user < userCount; user++)
                 {
@@ -198,11 +198,12 @@ namespace GithubContest
                 int[] predictList = new int[10];
                 foreach (IntFloat sort in sortMe)
                 {
-                    if (usr.Repo.GetByInternalID(sort.Int) != null)
+                    Repository r = usr.Repo.GetByInternalID(sort.Int);
+                    if (r != null)
                         continue;
                     else
                     {
-                        predictList[cnt] = sort.Int;
+                        predictList[cnt] = td.Repositories.GetByInternalID(sort.Int).ExternalID;
                         cnt++;
                         if (cnt == 10) break;
                     }

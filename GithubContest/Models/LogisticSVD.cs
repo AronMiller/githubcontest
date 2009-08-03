@@ -39,13 +39,17 @@ namespace GithubContest
             repoCount = td.Repositories.Count;
 
             // model hypers
-            featureCount = 1;
+            featureCount = 20;
             
 
             // model params
             Random r = new Random();
             userBias = new float[userCount];
+            for (int i = 0; i < userCount; i++)
+                userBias[i] = -10;
             repoBias = new float[repoCount];
+            for (int i = 0; i < userCount; i++)
+                repoBias[i] = -10;
             userFeatures = new float[userCount][];
             for (int i = 0; i < userCount; i++)
             {
@@ -188,7 +192,7 @@ namespace GithubContest
                     //pred = (float)(1f / (1f + Math.Exp(-pred)));
                     IntFloat sort = new IntFloat();
                     sort.Int = repo;
-                    sort.Float = -pred;
+                    sort.Float = pred;
                     sortMe.Add(sort); 
                 }
 

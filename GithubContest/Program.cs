@@ -39,7 +39,7 @@ namespace GithubContest
             TestData testData = new TestData();
             testData.Load(test, trainData);
             
-            QuickFix(trainData);
+            //QuickFix(trainData);
 
             LogisticSVD svd = new LogisticSVD();
             svd.Setup(trainData, testData, results);

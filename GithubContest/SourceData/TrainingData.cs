@@ -24,12 +24,9 @@ namespace GithubContest
                 r.ExternalID = externID;
                 r.Name = split[0];
                 r.DateCreated = DateTime.Parse(split[1]);
-                Repositories.Add(r);
+                Repositories.AddRepository(r);
             }
-            Repositories.CreateIndex();
-        }
-
-        
+        }       
 
         private void LoadLangs(string lang)
         {
@@ -74,10 +71,8 @@ namespace GithubContest
                 int usrID = int.Parse(split[0]);
                 int repoID = int.Parse(split[1]);
                 User u = Users.GetOrAddNew(usrID);
-                u.Repo.Add(Repositories.GetByExternID(repoID));
+                u.Repo.AddRepository(Repositories.GetByExternID(repoID));
             }
-            foreach (User u in Users)
-                u.Repo.CreateIndex();
         }
 
         public void Load(string repos, string lang, string data)

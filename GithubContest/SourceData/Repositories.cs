@@ -4,15 +4,16 @@ using System.Text;
 
 namespace GithubContest
 {
-    public class Repositories: List<Repository>
+    public class Repositories
     {
-        private Dictionary<int, int> internalIndex = new Dictionary<int, int>();
-        private Dictionary<int, int> externalIndex = new Dictionary<int, int>();
+        private List<Repository> allReps = new List<Repository>();
+        private Dictionary<int, Repository> internalIndex = new Dictionary<int, Repository>();
+        private Dictionary<int, Repository> externalIndex = new Dictionary<int, Repository>();
 
         internal Repository GetByExternID(int externID)
         {
             if (externalIndex.ContainsKey(externID))
-                return this[externalIndex[externID]];
+                return externalIndex[externID];
             else
                 return null;
         }
@@ -20,19 +21,25 @@ namespace GithubContest
         internal Repository GetByInternalID(int internalID)
         {
             if (internalIndex.ContainsKey(internalID))
-                return this[internalIndex[internalID]];
+                return internalIndex[internalID];
             else
                 return null;
         }
 
-        public void CreateIndex()
+        public void AddRepository(Repository r)
         {
-            for(int i = 0; i < this.Count; i++) 
-            {
-                Repository r = this[i];
-                externalIndex[r.ExternalID] = i;
-                internalIndex[r.ID] = i;
-            }
+            allReps.Add(r);
+            externalIndex[r.ExternalID] = r;
+            internalIndex[r.ID] = r;
+        }
+        public int Count
+        {
+            get { return allReps.Count; }
+        }
+
+        public Repository[] GetList()
+        {
+            return allReps.ToArray();
         }
     }
 }

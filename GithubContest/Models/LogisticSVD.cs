@@ -17,7 +17,7 @@ namespace GithubContest
         int[][] uod;
         int userCount;
         int repoCount;
-        float reg = .001f;
+        float reg = .015f;
 
         int featureCount;
         float[] userBias; 
@@ -46,10 +46,10 @@ namespace GithubContest
             Random r = new Random();
             userBias = new float[userCount];
             for (int i = 0; i < userCount; i++)
-                userBias[i] = -10;
+                userBias[i] = 0;
             repoBias = new float[repoCount];
             for (int i = 0; i < userCount; i++)
-                repoBias[i] = -10;
+                repoBias[i] = 0;
             userFeatures = new float[userCount][];
             for (int i = 0; i < userCount; i++)
             {
@@ -101,12 +101,12 @@ namespace GithubContest
                             pred += uf[f] * rf[f];
                         }
 
-                        pred = (float)(1f / (1f + Math.Exp(-pred)));
+                     //   pred = (float)(1f / (1f + Math.Exp(-pred)));
                         float err = 1f - pred;
                         totalErrPos += err * err;
 
-                        userBias[user] += trRate * err;
-                        repoBias[repo] += trRate * err;
+                        //userBias[user] += trRate * err;
+                        //repoBias[repo] += trRate * err;
 
                         for (int f = 0; f < featureCount; f++)
                         {
@@ -117,7 +117,7 @@ namespace GithubContest
                     }
 
                     
-                    // random negative selections
+                 /*   // random negative selections
                     for (int j = 0; j < repos.Length; j++)
                     {
                         int repo = r.Next(repoCount); 
@@ -130,7 +130,7 @@ namespace GithubContest
                             pred += uf[f] * rf[f];
                         }
 
-                        pred = (float)(1f / (1f + Math.Exp(-pred)));
+                        //pred = (float)(1f / (1f + Math.Exp(-pred)));
                         float err = 0f - pred;
                         totalErrNeg += err * err;
 
@@ -143,7 +143,7 @@ namespace GithubContest
                             rf[f] += trRate * (err * uf[f] - reg * rf[f]);
                         }
                         countNeg++;
-                    }
+                    }*/
                 }
                 totalErrPos = (float)Math.Sqrt(totalErrPos / countPos);
                 totalErrNeg = (float)Math.Sqrt(totalErrNeg / countPos);
@@ -174,7 +174,7 @@ namespace GithubContest
                     }
 
                     //pred = (float)(1f / (1f + Math.Exp(-pred)));
-                    if (pred > 0f)
+                    if (pred > .3f)
                     {
                         IntFloat sort = new IntFloat();
                         sort.Int = repo;

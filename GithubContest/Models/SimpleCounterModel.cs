@@ -50,8 +50,7 @@ namespace GithubContest
                 float[] userWeights = new float[td.Users.Count];
                 for (int i = 0; i < userMatches.Length; i++)
                 {
-                    int minLength = Math.Min(uod[userA.ID].Length, uod[i].Length);
-                    userWeights[i] = (userMatches[i] / (float)(minLength + 100)); 
+                    userWeights[i] = (float)(userMatches[i] / ((float)uod[userA.ID].Length * uod[i].Length));
                 }
 
                 // now weighted repo matches

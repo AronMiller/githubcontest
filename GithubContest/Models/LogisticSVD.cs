@@ -105,8 +105,8 @@ namespace GithubContest
                         float err = 1f - pred;
                         totalErrPos += err * err;
 
-                        //userBias[user] += trRate * err;
-                        //repoBias[repo] += trRate * err;
+                        userBias[user] += trRate * err;
+                        repoBias[repo] += trRate * err;
 
                         for (int f = 0; f < featureCount; f++)
                         {
@@ -117,8 +117,8 @@ namespace GithubContest
                     }
 
                     
-                 /*   // random negative selections
-                    for (int j = 0; j < repos.Length; j++)
+                    // random negative selections
+                    for (int j = 0; j < repos.Length * 10; j++)
                     {
                         int repo = r.Next(repoCount); 
 
@@ -143,7 +143,7 @@ namespace GithubContest
                             rf[f] += trRate * (err * uf[f] - reg * rf[f]);
                         }
                         countNeg++;
-                    }*/
+                    }
                 }
                 totalErrPos = (float)Math.Sqrt(totalErrPos / countPos);
                 totalErrNeg = (float)Math.Sqrt(totalErrNeg / countPos);

@@ -32,20 +32,25 @@ namespace GithubContest
             string test = @"C:\Users\Aron\Github\download\test.txt";
             string results = @"C:\Users\Aron\Github\GithubContest\results.txt";
 
+
+            
+
             TrainingData trainData = new TrainingData();
             trainData.Load(repos, lang, data);
             
             TestData testData = new TestData();
             testData.Load(test, trainData);
 
-            SimpleCounterModel scm = new SimpleCounterModel();
-            int[][] predictions1 = scm.Run(trainData, testData, results);
-            
             SimpleMovieKnn smknn = new SimpleMovieKnn();
-            int[][] predictions2 = smknn.Run(trainData, testData, results);
+            int[][] predictions1 = smknn.Run2(trainData, testData, results);
+
+          //  SimpleCounterModel scm = new SimpleCounterModel();
+           // int[][] predictions2 = scm.Run(trainData, testData, results);
+            
+            
 
             // combine
-            int[][] blend = new int[testData.Users.Count][];
+            /*int[][] blend = new int[testData.Users.Count][];
             for (int i = 0; i < blend.Length; i++)
             {
                 blend[i] = new int[10];
@@ -53,13 +58,18 @@ namespace GithubContest
                 {
                     blend[i][j] = predictions1[i][j];
                 }
-                
-                for (int j = 5; j < 10; j++)
+                int cnt = 5;
+                foreach (int j in predictions2[i])
                 {
-                    blend[i][j] = predictions2[i][j - 5];
+                    if (!blend[i].Contains<int>(j))
+                    {
+                        blend[i][cnt] = j;
+                        cnt++;
+                        if (cnt == 10) break;
+                    }
                 }
-            }
-            DataFormatter.OutputPredictions(results, trainData, testData, blend);
+            }*/
+            DataFormatter.OutputPredictions(results, trainData, testData, predictions1);
 
             //QuickFix(trainData);
             /*

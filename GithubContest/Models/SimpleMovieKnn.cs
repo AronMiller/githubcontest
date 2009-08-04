@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace GithubContest
 {
-    public class SimpleCounterModel
+    public class SimpleMovieKnn
     {
         // for each user in test
         // find similar users, count up 
@@ -34,47 +33,34 @@ namespace GithubContest
             {
                 User userA = test.Users[usrIndx];
 
-                // Figure out user-user weights
                 int[] repos = uod[userA.ID];
-                int[] userMatches = new int[td.Users.Count];
+                int[] repoMatches = new int[mod.Length];
+                int[] repoCountsA = new int[mod.Length];
+                int[] repoCountsB = new int[mod.Length];
                 for (int rIndx = 0; rIndx < repos.Length; rIndx++)
                 {
                     int rID = repos[rIndx];
                     List<int> users = mod[rID];
-                    foreach (int userB in users) 
+                    foreach (int userB in users)
                     {
-                        if(userB == userA.ID) continue;
-                        userMatches[userB]++;
-                    }
-                }
-                float[] userWeights = new float[td.Users.Count];
-                for (int i = 0; i < userMatches.Length; i++)
-                {
-                    userWeights[i] = (float)(userMatches[i] / (Math.Sqrt(uod[userA.ID].Length) * Math.Sqrt(uod[i].Length)));
-                }
-
-                // now weighted repo matches
-                float[] repoMatches = new float[td.Repositories.Count];
-                for (int userB = 0; userB < uod.Length; userB++)
-                {
-                    if (userB == userA.ID) continue;
-                    if (userMatches[userB] > 0)
-                    {
-                        float weight = userWeights[userB] * userWeights[userB];
-
-                        foreach (int repo in uod[userB])
+                        if (userB == userA.ID) continue;
+                        // for every movie in user B
+                        foreach(int repo in uod[userB])
                         {
-                            repoMatches[repo] += weight;
+                            if (repo == rID) continue;
+                            repoMatches[repo]++;
+                          //  repoCountsA[repo] += mod[repo].Count;
+                           // repoCountsB[repo] += mod[rID].Count;
                         }
                     }
                 }
 
-                // strike out all repos already watched
-                foreach (int rID in uod[userA.ID])
+                float[] movieWeights = new float[mod.Length];
+                for (int i = 0; i < movieWeights.Length; i++)
                 {
-                    repoMatches[rID] = 0;
+                    if(repoMatches[i] > 0)
+                        movieWeights[i] = repoMatches[i]; //float)(repoMatches[i] / (100 + Math.Sqrt(repoCountsA[i]) * Math.Sqrt(repoCountsB[i]))); 
                 }
-
 
                 // find x highest
                 predictions[usrIndx] = new int[10];
@@ -85,18 +71,19 @@ namespace GithubContest
 
                     for (int j = 0; j < repoMatches.Length; j++)
                     {
-                        float weight = repoMatches[j];
+                        float weight = movieWeights[j];
                         if (weight > highWeight)
                         {
                             highRepo = j;
                             highWeight = weight;
                         }
                     }
-                    repoMatches[highRepo] = 0; // zero out to skip next round
+                    movieWeights[highRepo] = 0; // zero out to skip next round
                     predictions[usrIndx][i] = highRepo;
                 }
             }
             DataFormatter.OutputPredictions(outPath, td, test, predictions);
         }
+
     }
 }

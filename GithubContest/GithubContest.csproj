@@ -48,6 +48,7 @@
     <Compile Include="Models\LogisticSVD.cs" />
     <Compile Include="Models\DataFormatter.cs" />
     <Compile Include="Models\SimpleCounterModel.cs" />
+    <Compile Include="Models\SimpleMovieKnn.cs" />
     <Compile Include="Models\SimplePearson.cs" />
     <Compile Include="SourceData\Language.cs" />
     <Compile Include="Program.cs" />

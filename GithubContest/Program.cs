@@ -38,8 +38,10 @@ namespace GithubContest
             TestData testData = new TestData();
             testData.Load(test, trainData);
 
-            SimpleCounterModel scm = new SimpleCounterModel();
-            scm.Run(trainData, testData, results);
+           // SimpleCounterModel scm = new SimpleCounterModel();
+           // scm.Run(trainData, testData, results);
+            SimpleMovieKnn smknn = new SimpleMovieKnn();
+            smknn.Run(trainData, testData, results);
 
             //QuickFix(trainData);
             /*

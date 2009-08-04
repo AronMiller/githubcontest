@@ -43,14 +43,14 @@ namespace GithubContest
 
             SimpleMovieKnn smknn = new SimpleMovieKnn();
             int[][] predictions1 = smknn.Run2(trainData, testData, results);
-
-          //  SimpleCounterModel scm = new SimpleCounterModel();
-           // int[][] predictions2 = scm.Run(trainData, testData, results);
+            
+            SimpleCounterModel scm = new SimpleCounterModel();
+            int[][] predictions2 = scm.Run(trainData, testData, results);
             
             
 
             // combine
-            /*int[][] blend = new int[testData.Users.Count][];
+            int[][] blend = new int[testData.Users.Count][];
             for (int i = 0; i < blend.Length; i++)
             {
                 blend[i] = new int[10];
@@ -68,8 +68,8 @@ namespace GithubContest
                         if (cnt == 10) break;
                     }
                 }
-            }*/
-            DataFormatter.OutputPredictions(results, trainData, testData, predictions1);
+            }
+            DataFormatter.OutputPredictions(results, trainData, testData, blend);
 
             //QuickFix(trainData);
             /*

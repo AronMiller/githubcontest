@@ -21,16 +21,16 @@ namespace GithubContest
             return retVal;
         }
 
-        public static void OutputPredictions(string outputPath, TestData td, int[][] predictions)
+        public static void OutputPredictions(string outputPath, TrainingData train, TestData test, int[][] predictions)
         {
             if (File.Exists(outputPath)) File.Delete(outputPath);
             StreamWriter sw = new StreamWriter(File.OpenWrite(outputPath));
             for (int usrIndx = 0; usrIndx < predictions.Length; usrIndx++)
             {
-                string outStr = td.Users[usrIndx].ExternalID + ":";
+                string outStr = test.Users[usrIndx].ExternalID + ":";
                 for (int i = 0; i < predictions[usrIndx].Length; i++)
                 {
-                    outStr += predictions[usrIndx][i];
+                    outStr += train.Repositories.GetByInternalID(predictions[usrIndx][i]).ExternalID;
                     if (i < predictions[usrIndx].Length - 1) outStr += ",";
                 }
                 

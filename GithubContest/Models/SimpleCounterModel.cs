@@ -35,12 +35,12 @@ namespace GithubContest
                 User userA = test.Users[usrIndx];
 
                 // Figure out user-user weights
-                Repository[] repos = userA.Repo.GetList();
+                int[] repos = uod[userA.ID];
                 int[] userMatches = new int[td.Users.Count];
                 for (int rIndx = 0; rIndx < repos.Length; rIndx++)
                 {
-                    Repository r = repos[rIndx];
-                    List<int> users = mod[r.ID];
+                    int rID = repos[rIndx];
+                    List<int> users = mod[rID];
                     foreach (int userB in users) 
                     {
                         if(userB == userA.ID) continue;
@@ -62,6 +62,14 @@ namespace GithubContest
                         }
                     }
                 }
+
+                // strike out all repos already watched
+                foreach (int rID in uod[userA.ID])
+                {
+                    repoMatches[rID] = 0;
+                }
+
+
                 // find x highest
                 predictions[usrIndx] = new int[10];
                 for (int i = 0; i < 10; i++)
@@ -82,7 +90,7 @@ namespace GithubContest
                     predictions[usrIndx][i] = highRepo;
                 }
             }
-            DataFormatter.OutputPredictions(outPath, test, predictions);
+            DataFormatter.OutputPredictions(outPath, td, test, predictions);
         }
     }
 }

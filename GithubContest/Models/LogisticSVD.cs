@@ -221,7 +221,7 @@ namespace GithubContest
                     if (i < predictions - 1) outStr += ",";
                 }
 
-                DataFormatter.OutputPredictions(results, test, outPredictions);
+                DataFormatter.OutputPredictions(results, td, test, outPredictions);
                 Console.WriteLine(outStr);
                 //sw.WriteLine(outStr);
                 sortMe.Clear();

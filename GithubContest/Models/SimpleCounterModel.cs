@@ -10,7 +10,7 @@ namespace GithubContest
         // for each user in test
         // find similar users, count up 
 
-        public void Run(TrainingData td, TestData test, string outPath)
+        public int[][] Run(TrainingData td, TestData test, string outPath)
         {
             int[][] uod = DataFormatter.GetUserOrderRepositories(td);
 
@@ -96,7 +96,8 @@ namespace GithubContest
                     predictions[usrIndx][i] = highRepo;
                 }
             }
-            DataFormatter.OutputPredictions(outPath, td, test, predictions);
+            return predictions;
+            //DataFormatter.OutputPredictions(outPath, td, test, predictions);
         }
     }
 }

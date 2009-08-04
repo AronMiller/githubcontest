@@ -38,10 +38,28 @@ namespace GithubContest
             TestData testData = new TestData();
             testData.Load(test, trainData);
 
-           // SimpleCounterModel scm = new SimpleCounterModel();
-           // scm.Run(trainData, testData, results);
+            SimpleCounterModel scm = new SimpleCounterModel();
+            int[][] predictions1 = scm.Run(trainData, testData, results);
+            
             SimpleMovieKnn smknn = new SimpleMovieKnn();
-            smknn.Run(trainData, testData, results);
+            int[][] predictions2 = smknn.Run(trainData, testData, results);
+
+            // combine
+            int[][] blend = new int[testData.Users.Count][];
+            for (int i = 0; i < blend.Length; i++)
+            {
+                blend[i] = new int[10];
+                for (int j = 0; j < 5; j++)
+                {
+                    blend[i][j] = predictions1[i][j];
+                }
+                
+                for (int j = 5; j < 10; j++)
+                {
+                    blend[i][j] = predictions2[i][j - 5];
+                }
+            }
+            DataFormatter.OutputPredictions(results, trainData, testData, blend);
 
             //QuickFix(trainData);
             /*

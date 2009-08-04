@@ -37,14 +37,17 @@ namespace GithubContest
             
             TestData testData = new TestData();
             testData.Load(test, trainData);
-            
-            //QuickFix(trainData);
 
+            SimpleCounterModel scm = new SimpleCounterModel();
+            scm.Run(trainData, testData, results);
+
+            //QuickFix(trainData);
+            /*
             LogisticSVD svd = new LogisticSVD();
             svd.Setup(trainData, testData, results);
             for(int epoch = 0; epoch < 500; epoch++)
                 svd.Train(1);
-            svd.Predict();
+            svd.Predict();*/
         }
     }
 }

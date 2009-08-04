@@ -17,7 +17,7 @@ namespace GithubContest
         int[][] uod;
         int userCount;
         int repoCount;
-        float reg = .015f;
+        float reg = 0f;//.015f;
 
         int featureCount;
         float[] userBias; 
@@ -39,17 +39,17 @@ namespace GithubContest
             repoCount = td.Repositories.Count;
 
             // model hypers
-            featureCount = 20;
+            featureCount = 10;
             
 
             // model params
             Random r = new Random();
             userBias = new float[userCount];
             for (int i = 0; i < userCount; i++)
-                userBias[i] = 0;
+                userBias[i] = -10;
             repoBias = new float[repoCount];
             for (int i = 0; i < userCount; i++)
-                repoBias[i] = 0;
+                repoBias[i] = -10;
             userFeatures = new float[userCount][];
             for (int i = 0; i < userCount; i++)
             {
@@ -76,7 +76,15 @@ namespace GithubContest
             
             for (int epoch = 0; epoch < epochMax; epoch++)
             {
-                float trRate = .01f * (float)Math.Pow(.95, epoch);
+                for (int i = 0; i < userCount; i++)
+                {
+                    for (int f = 0; f < featureCount; f++)
+                    {
+                        userFeatures[i][f] = -.1f + .001f * r.Next(200);
+                    }
+                }
+
+                float trRate = .01f;
                 float totalErrPos = 0f;
                 float totalErrNeg = 0f;
                 int countPos = 0;
@@ -101,12 +109,12 @@ namespace GithubContest
                             pred += uf[f] * rf[f];
                         }
 
-                     //   pred = (float)(1f / (1f + Math.Exp(-pred)));
+                        pred = (float)(1f / (1f + Math.Exp(-pred)));
                         float err = 1f - pred;
                         totalErrPos += err * err;
 
-                        userBias[user] += trRate * err;
-                        repoBias[repo] += trRate * err;
+                       // userBias[user] += trRate * err;
+                       // repoBias[repo] += trRate * err;
 
                         for (int f = 0; f < featureCount; f++)
                         {
@@ -117,7 +125,7 @@ namespace GithubContest
                     }
 
                     
-                    // random negative selections
+              /*      // random negative selections
                     for (int j = 0; j < repos.Length * 10; j++)
                     {
                         int repo = r.Next(repoCount); 
@@ -143,7 +151,7 @@ namespace GithubContest
                             rf[f] += trRate * (err * uf[f] - reg * rf[f]);
                         }
                         countNeg++;
-                    }
+                    }*/
                 }
                 totalErrPos = (float)Math.Sqrt(totalErrPos / countPos);
                 totalErrNeg = (float)Math.Sqrt(totalErrNeg / countPos);
@@ -153,10 +161,12 @@ namespace GithubContest
 
         public void Predict()
         {
-            StreamWriter sw = new StreamWriter(File.OpenWrite(results));
+            //StreamWriter sw = new StreamWriter(File.OpenWrite(results));
             
             // predict all repos and sort
             List<IntFloat> sortMe = new List<IntFloat>();
+            int[][] outPredictions = new int[test.Users.Count][];
+            int usrCnt = 0;
             foreach (User usr in test.Users)
             {
                 float[] uf = userFeatures[usr.ID];
@@ -200,8 +210,10 @@ namespace GithubContest
                         if (cnt == predictions) break;
                     }
                 }
+                
+                outPredictions[usrCnt] = predictList;
 
-                // print to file
+                // Console Output
                 string outStr = usr.ExternalID + ":";
                 for (int i = 0; i < predictions; i++)
                 {
@@ -209,11 +221,12 @@ namespace GithubContest
                     if (i < predictions - 1) outStr += ",";
                 }
 
+                DataFormatter.OutputPredictions(results, test, outPredictions);
                 Console.WriteLine(outStr);
-                sw.WriteLine(outStr);
+                //sw.WriteLine(outStr);
                 sortMe.Clear();
             }
-            sw.Close();
+            //sw.Close();
         }
     }
 }

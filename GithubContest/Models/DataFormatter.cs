@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace GithubContest
 {
@@ -18,6 +19,24 @@ namespace GithubContest
                     retVal[u.ID][i] = reps[i].ID;
             }
             return retVal;
+        }
+
+        public static void OutputPredictions(string outputPath, TestData td, int[][] predictions)
+        {
+            if (File.Exists(outputPath)) File.Delete(outputPath);
+            StreamWriter sw = new StreamWriter(File.OpenWrite(outputPath));
+            for (int usrIndx = 0; usrIndx < predictions.Length; usrIndx++)
+            {
+                string outStr = td.Users[usrIndx].ExternalID + ":";
+                for (int i = 0; i < predictions[usrIndx].Length; i++)
+                {
+                    outStr += predictions[usrIndx][i];
+                    if (i < predictions[usrIndx].Length - 1) outStr += ",";
+                }
+                
+                sw.WriteLine(outStr);
+            }
+            sw.Close();
         }
     }
 }

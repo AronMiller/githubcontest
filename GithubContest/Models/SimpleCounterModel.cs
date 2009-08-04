@@ -47,14 +47,20 @@ namespace GithubContest
                         userMatches[userB]++;
                     }
                 }
+                float[] userWeights = new float[td.Users.Count];
+                for (int i = 0; i < userMatches.Length; i++)
+                {
+                    userWeights[i] = (float)(userMatches[i] / (Math.Sqrt(uod[userA.ID].Length) * Math.Sqrt(uod[i].Length)));
+                }
+
                 // now weighted repo matches
-                int[] repoMatches = new int[td.Repositories.Count];
+                float[] repoMatches = new float[td.Repositories.Count];
                 for (int userB = 0; userB < uod.Length; userB++)
                 {
                     if (userB == userA.ID) continue;
                     if (userMatches[userB] > 0)
                     {
-                        int weight = userMatches[userB] * userMatches[userB];
+                        float weight = userWeights[userB] * userWeights[userB];
 
                         foreach (int repo in uod[userB])
                         {
@@ -75,11 +81,11 @@ namespace GithubContest
                 for (int i = 0; i < 10; i++)
                 {
                     int highRepo = 0;
-                    int highWeight = 0;
+                    float highWeight = 0;
 
                     for (int j = 0; j < repoMatches.Length; j++)
                     {
-                        int weight = repoMatches[j];
+                        float weight = repoMatches[j];
                         if (weight > highWeight)
                         {
                             highRepo = j;

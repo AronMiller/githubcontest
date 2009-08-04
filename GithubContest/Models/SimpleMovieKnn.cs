@@ -35,12 +35,15 @@ namespace GithubContest
 
                 int[] repos = uod[userA.ID];
                 int[] repoMatches = new int[mod.Length];
-                int[] repoCountsA = new int[mod.Length];
-                int[] repoCountsB = new int[mod.Length];
+                float[] movieWeights = new float[mod.Length];
+
                 for (int rIndx = 0; rIndx < repos.Length; rIndx++)
                 {
                     int rID = repos[rIndx];
                     List<int> users = mod[rID];
+                    int[] repoCountsA = new int[mod.Length];
+                    int[] repoCountsB = new int[mod.Length];
+
                     foreach (int userB in users)
                     {
                         if (userB == userA.ID) continue;
@@ -49,17 +52,15 @@ namespace GithubContest
                         {
                             if (repo == rID) continue;
                             repoMatches[repo]++;
-                          //  repoCountsA[repo] += mod[repo].Count;
-                           // repoCountsB[repo] += mod[rID].Count;
+                            repoCountsA[repo] += mod[repo].Count;
+                            repoCountsB[repo] += mod[rID].Count;
                         }
                     }
-                }
-
-                float[] movieWeights = new float[mod.Length];
-                for (int i = 0; i < movieWeights.Length; i++)
-                {
-                    if(repoMatches[i] > 0)
-                        movieWeights[i] = repoMatches[i]; //float)(repoMatches[i] / (100 + Math.Sqrt(repoCountsA[i]) * Math.Sqrt(repoCountsB[i]))); 
+                    for (int i = 0; i < movieWeights.Length; i++)
+                    {
+                        if (repoMatches[i] > 0)
+                            movieWeights[i] += (repoMatches[i] / (100 + (float)(Math.Sqrt(repoCountsA[i]) * Math.Sqrt(repoCountsB[i])))); 
+                    }
                 }
 
                 // find x highest
